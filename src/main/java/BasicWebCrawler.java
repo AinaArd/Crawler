@@ -11,8 +11,8 @@ import java.util.HashSet;
 public class BasicWebCrawler {
 
     private static HashSet<String> links;
-    private int i = 1;
-    private static final File archive = new File("src/main/resources/crawler4j/archive.txt");
+    private int i = 0;
+    private static final String path = "src/main/resources/crawler4j/";
     private static final File index = new File("src/main/resources/crawler4j/index.txt");
 
     public BasicWebCrawler() {
@@ -29,7 +29,8 @@ public class BasicWebCrawler {
                 Document document = Jsoup.connect(URL).get();
                 Elements linksOnPage = document.select("a[href]");
 
-                savePagesToArchive(document.text());
+                File fileName = new File(path + i + ".txt");
+                savePagesToArchive(document.text(), fileName);
                 saveToIndex(i, URL);
 
                 for (Element page : linksOnPage) {
@@ -41,9 +42,9 @@ public class BasicWebCrawler {
         }
     }
 
-    private void savePagesToArchive(String text) {
+    private void savePagesToArchive(String text, File fileName) {
         try {
-            FileUtils.writeStringToFile(archive, text, true);
+            FileUtils.writeStringToFile(fileName, text, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,7 +60,7 @@ public class BasicWebCrawler {
     }
 
     public static void main(String[] args) {
-        new BasicWebCrawler().getPageLinks("http://www.mkyong.com/");
+        new BasicWebCrawler().getPageLinks("http://www.consultant.ru/");
         System.out.println(links.size());
     }
 }
