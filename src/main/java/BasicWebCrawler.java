@@ -1,48 +1,35 @@
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
+import java.nio.charset.Charset;
+import java.util.List;
 
 public class BasicWebCrawler {
 
-    private static HashSet<String> links;
-    private int i = 0;
     private static final String path = "src/main/resources/crawler4j/";
+    private static final String type = ".txt";
     private static final File index = new File("src/main/resources/crawler4j/index.txt");
+    private static final File articles = new File("src/main/resources/articles.txt");
 
-    public BasicWebCrawler() {
-        links = new HashSet<>();
-    }
-
-    public void getPageLinks(String URL) {
-        if (!links.contains(URL)) {
-            try {
-                links.add(URL);
-                System.out.println(URL + " " + i);
+    public void crawle() {
+        int i = 1;
+        try {
+            List<String> articlesList = FileUtils.readLines(articles, Charset.defaultCharset());
+            for (String article : articlesList) {
+                Document document = Jsoup.connect(article).get();
+                saveArticleToArchive(document.text(), new File(path + i + type));
+                saveToIndex(i, article);
                 i++;
-
-                Document document = Jsoup.connect(URL).get();
-                Elements linksOnPage = document.select("a[href]");
-
-                File fileName = new File(path + i + ".txt");
-                savePagesToArchive(document.text(), fileName);
-                saveToIndex(i, URL);
-
-                for (Element page : linksOnPage) {
-                    getPageLinks(page.attr("abs:href"));
-                }
-            } catch (IOException e) {
-                System.err.println("For '" + URL + "': " + e.getMessage());
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void savePagesToArchive(String text, File fileName) {
+    private void saveArticleToArchive(String text, File fileName) {
         try {
             FileUtils.writeStringToFile(fileName, text, true);
         } catch (IOException e) {
@@ -60,7 +47,7 @@ public class BasicWebCrawler {
     }
 
     public static void main(String[] args) {
-        new BasicWebCrawler().getPageLinks("http://www.consultant.ru/");
-        System.out.println(links.size());
+        BasicWebCrawler crawler = new BasicWebCrawler();
+        crawler.crawle();
     }
 }
