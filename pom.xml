@@ -41,6 +41,13 @@
             <artifactId>opennlp-tools</artifactId>
             <version>1.9.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.python</groupId>
+            <artifactId>jython</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+
     </dependencies>
+
 
 </project>

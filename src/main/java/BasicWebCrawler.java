@@ -1,10 +1,15 @@
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BasicWebCrawler {
@@ -47,7 +52,29 @@ public class BasicWebCrawler {
     }
 
     public static void main(String[] args) {
-        BasicWebCrawler crawler = new BasicWebCrawler();
-        crawler.crawle();
+//        BasicWebCrawler crawler = new BasicWebCrawler();
+//        crawler.crawle();
+//        Tokenizer tokenizer = new Tokenizer();
+//        tokenizer.makeTokens();
+
+        String s = null;
+
+        try {
+            Process p = Runtime.getRuntime().exec("python C:\\AinaArd\\Crawler\\src\\main\\resources\\lemmatizer.py");
+
+            BufferedReader stdError = new BufferedReader(new
+                    InputStreamReader(p.getErrorStream()));
+
+            // read any errors from the attempted command
+            System.out.println("Here is the standard error of the command (if any):\n");
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
+            System.exit(0);
+        } catch (IOException e) {
+            System.out.println("exception happened - here's what I know: ");
+            e.printStackTrace();
+        }
+
     }
 }
